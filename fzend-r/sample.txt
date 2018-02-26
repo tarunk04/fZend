@@ -1,0 +1,22 @@
+fZend is a free product and is the created by Accidental Engineer.
+To start transfer of files run the fZend.exe as Aministrator and enter "start" to create server.
+Server will be hosted at http://localhost:8088, you can check it by opening the
+address in your web browser. If you are opening http://localhost:8088 for first time, you will be asked for password change, if you want to change password then change it or Skip
+to use default password "000000".
+
+
+  **MAKE SURE THAT THAT YOU FIREWALL IS OFF**
+Then connect your device with other device on network (either WIFI or LAN).
+Check out your IP address of your device on which the server is running. In fZend command line type "show-ip" to get the ip address of your device.
+Assume that IP address is 192.168.XXX.XXX then type http://192.168.XXX.XXX:8088 in the
+browser. To send multiple files select all files you want to send using clt or shift key and then click on send.
+ It has been developed through GitHub. And if someone is interested in designing, development and content management, he can contact the developers or he can look for https://github.com/Accidental-Engineer Accidental-Engineer on GitHub.
+ 
+
+Shutting down the server
+
+To shut down the server run the fZend.exe as Aministrator and Enter stop.
+
+The authors were trying to make the best product so they
+cannot be held responsible for any type of damage or
+problems caused by using this or another software.

@@ -1,0 +1,57 @@
+
+Windows IP Configuration
+
+
+Ethernet adapter Ethernet 2:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Wireless LAN adapter Local Area Connection* 11:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Ethernet adapter VMware Network Adapter VMnet1:
+
+   Connection-specific DNS Suffix  . : 
+   Link-local IPv6 Address . . . . . : fe80::acac:2cb3:2818:40f7%15
+   Autoconfiguration IPv4 Address. . : 169.254.64.247
+   Subnet Mask . . . . . . . . . . . : 255.255.0.0
+   Default Gateway . . . . . . . . . : 
+
+Ethernet adapter VMware Network Adapter VMnet8:
+
+   Connection-specific DNS Suffix  . : 
+   Link-local IPv6 Address . . . . . : fe80::d0f0:242f:a11f:a67f%10
+   Autoconfiguration IPv4 Address. . : 169.254.166.127
+   Subnet Mask . . . . . . . . . . . : 255.255.0.0
+   Default Gateway . . . . . . . . . : 
+
+Ethernet adapter Ethernet:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Wireless LAN adapter Wi-Fi:
+
+   Connection-specific DNS Suffix  . : 
+   IPv6 Address. . . . . . . . . . . : 2405:205:a12b:5e82:ad2d:9ea5:6e55:f583
+   Temporary IPv6 Address. . . . . . : 2405:205:a12b:5e82:6957:da32:73e3:a137
+   Link-local IPv6 Address . . . . . : fe80::ad2d:9ea5:6e55:f583%8
+   IPv4 Address. . . . . . . . . . . : 192.168.43.33
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . : fe80::c868:2263:f542:d40f%8
+                                       192.168.43.1
+
+Ethernet adapter Bluetooth Network Connection:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Tunnel adapter Local Area Connection* 14:
+
+   Connection-specific DNS Suffix  . : 
+   IPv6 Address. . . . . . . . . . . : 2001:0:9d38:90d7:20ff:38be:d0e2:a89d
+   Link-local IPv6 Address . . . . . : fe80::20ff:38be:d0e2:a89d%19
+   Default Gateway . . . . . . . . . : 
