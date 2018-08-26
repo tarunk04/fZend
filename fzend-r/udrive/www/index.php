@@ -1,8 +1,7 @@
 <?php
-include "./password/password.php";
+//<!-- fZend Beta 1.0.1 -->
 require_once('./res/pclzip.lib.php');
-include "verify.php";
-
+include "./verify.php";
 
   if (isset($_FILES['file']['name'])) {
     if ($_SESSION['server']==1) {
@@ -152,40 +151,54 @@ include "verify.php";
       }
     }
     if($check == 1){
-      echo "ok";
+
+      $q_request = "UPDATE user SET job_error_code = 0 WHERE ip = '$u_ip' ";
+      $update = mysql_query($q_request);
+      if ($update) {
+        echo "ok";
+      }
     }
-    else {
-      echo "failed";
+    else if (check == 0) {
+      $u_ip=$_SERVER['REMOTE_ADDR'];
+      $q_request = "UPDATE user SET job_error_code = 1 WHERE ip = '$u_ip' ";
+      $update = mysql_query($q_request);
+      if ($update) {
+        echo "failed";
+      }
+    }
+    else{
+      echo "unknown error";
     }
   }
   }
   else if ($_POST['verify']) {
     $code = $_POST['auth'];
-    $_SESSION['new_user'] = 0;
     $ip = $_SESSION['ip'];
 
-    // $dir = "./password/";
-    // if (is_dir($dir)){
-    //   if ($dh = opendir($dir)){
-    //     while (($file = readdir($dh)) !== false){
-    //       if($file != "." && $file != ".."){$auth = $file;
-    //         // echo $file;
-    //       }
-    //     }
-    //     closedir($dh);
-    //   }
-    // }
+    $q = "SELECT * FROM server";
+    $server = mysql_query($q);
+    $auth = mysql_fetch_assoc($server);
+    $auth = $auth['password'];
+    if (sha1($code) === $auth) {
 
-    if ($code === $auth) {
-      $file = fopen("./user/user.txt", "a");
-      $Arr = array($ip=>"1");
-      $userJSON = json_encode($Arr);
-      fwrite($file, $userJSON."\n");
-      fclose($file);
-      ob_start();
-      header('Location: '.$_SERVER['PHP_SELF']);
-      ob_end_flush();
-      die();
+      if ($_SESSION['new_pass'] == 1) {
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $q_update_user = "UPDATE  `user` SET auth = 1 WHERE ip = '$ip' ";
+        $server = mysql_query($q_update_user);
+      }
+      else{
+        $q_insert_user = "INSERT INTO `user` (`ip`, `name`, `auth`, `online`) VALUES ( '$ip' , '', '1', CURRENT_TIMESTAMP) ";
+        $server = mysql_query($q_insert_user);
+      }
+
+      if ($server) {
+        $_SESSION['new_user'] = 0;
+        $_SESSION['new_pass']= 0;
+        ob_start();
+        header('Location: '.$_SERVER['PHP_SELF']);
+        ob_end_flush();
+        die();
+      }
     }
     else {
       ob_start();
@@ -194,17 +207,25 @@ include "verify.php";
       die();
     }
   }
+  // change password ......
   else if ($_POST['change']) {
     if (isset($_POST['pass']) && $_POST['pass'] != "") {
-    $file = fopen("./password/password.php", "w");
-    $pass = $_POST['pass'];
-    $set = "<?php \$default = 0; \$skip = 0; \$auth = '".$pass."'; ?>";
-    fwrite($file, $set);
-    fclose($file);
-    ob_start();
-    header('Location: '.$_SERVER['PHP_SELF']);
-    ob_end_flush();
-    die();
+      $pass = $_POST['pass'];
+      // $file = fopen("./password/password.php", "w");
+      //
+      // $set = "<?php \$default = 0; \$skip = 0; \$auth = '".$pass."'; ";
+      // fwrite($file, $set);
+      // fclose($file);
+      $q_update_pass = "UPDATE server SET password = '".sha1($pass)."', default_pass= 0 WHERE name = 'user'";
+      $update = mysql_query($q_update_pass);
+      $q_user_auth = "UPDATE user SET auth = 0";
+      $update1 = mysql_query($q_user_auth);
+      if ($update && $update1) {
+        ob_start();
+        header('Location: '.$_SERVER['PHP_SELF']);
+        ob_end_flush();
+        die();
+      }
     }
     else{
       ob_start();
@@ -213,8 +234,9 @@ include "verify.php";
       die();
     }
   }
+  // end change password ......
   else {
-    if ($_SESSION['new_user'] == 1) {
+    if ($_SESSION['new_user'] == 1 || ($_SESSION['new_user'] == 0 && $_SESSION['new_pass']== 1)) {
       ?>
       <head>
         <!-- CSS -->
@@ -262,7 +284,7 @@ include "verify.php";
     </html>
       <?php
     }
-    else if ($default == 1 && $_SESSION['server'] == 1 && $_SESSION['skip'] == 0 && !$_POST['skip']) {
+    else if (($default == 1 && $_SESSION['server'] == 1 && $_SESSION['skip'] == 0 && !$_POST['skip']) || $_GET['request']=='change_password') {
       ?>
       <head>
         <!-- CSS -->
@@ -295,7 +317,11 @@ include "verify.php";
             <div style="text-align:center;height:200px;color:#dcffd3;font-size:20px;">
               <img src="./images/icon.png" style="width:30%;"><br>
               fZend<br>
-              <span style="font-size:14px;">Please change you default password</span>
+              <?php if (isset($_GET['request']) && $_GET['request'] == 'change_password'): ?>
+                <span style="font-size:14px;">Change your password</span>
+              <?php else: ?>
+              <span style="font-size:14px;">Please change your default password</span>
+            <?php endif; ?>
             </div>
             <div>
               <form id="myForm" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" style="margin-top:0px;">
@@ -352,19 +378,22 @@ include "verify.php";
           $("#menu").click(function(){
             $("#side-menu").fadeToggle(20);
           });
-          //console.log($(".vid-slide"));
-          var vid_body = $(".vid").width()+30;
-          var max_vid_width = $(".vid-slide").width();
-          if(max_vid_width < vid_body){
-            $(".vid-slide-right").css("display","none");
-            $(".vid-slide-left").css("display","none");
-          }
-          else {
-            $(".vid-slide-right").css("display","block");
-          }
       });
-    </script>
-    <!-- End of Script-->
+
+      setInterval(function(){
+          $.ajax({url: "online.php", success: function(result){
+            //console.log(result);
+            if ( result != "") {
+              //var html =$("#request_body_noti").html();
+              //var newhtml = result;
+              //newhtml += html;
+              //console.log(newhtml);
+              $("#request_body_noti").prepend(result);
+              $(".request").css("display","flex");
+            }
+         }});
+      },1000);
+      </script>
   </head>
   <body>
     <?php if($_SESSION['server'] == 0):?>
@@ -479,73 +508,14 @@ include "verify.php";
           <!-- End of fZend LOGO -->
           <!-- fZend Title -->
           <li class="nav-item">
-            <a class="navbar-brand" id="brand-title" href="./">fZend</a>
+            <a class="navbar-brand" id="brand-title" href="./" style="font-family: cursive;"s>fZend</a>
           </li>
           <!-- End of fZend Tilte -->
-          <!-- Search Bar -->
-          <!-- <li class="nav-item" style="width:50%;line-height: 46px;" >
-            <form class="form-inline  show-search" id="search" action="/action_page.php" >
-              <div class="input-group" style="width:100%;">
-                <input type="text" class="form-control" placeholder="Search"/>
-                <button class="input-group-addon" type="submit" style="cursor:pointer;padding: 5px;"> <i class="flaticon-search font-xxs" style="position:relative;left:10px;color:#777;"></i></button>
-              </div>
-            </form>
-          </li> -->
-          <!-- End of Search Bar -->
         </ul>
       </div>
       <!-- Links -->
         <div class="  col-md-4 col-7" style="padding: 0px;">
           <ul class="navbar-nav " id="links" style="float:right; flex-direction: row;" >
-            <!-- Search Button -->
-            <!-- <li class="nav-item search-icon">
-              <a class="navbar-brand dark-icon no-pad-l no-pad-r" href="#">
-                <i class="flaticon-search font-xs"></i>
-              </a>
-            </li> -->
-            <!-- End of Search Button -->
-            <!-- <li class="nav-item btn-group">
-              <a class="navbar-brand dark-icon dropdown-toggle-split no-pad-l no-pad-r" data-toggle="dropdown">
-                <i class="flaticon-shapes font-xs" ></i>
-              </a>
-                <div class="dropdown-menu dropdown-menu-right " style="top:49px;">
-                  <h5 class="dropdown-header font-m">Categories</h5>
-                  <a class="dropdown-item" href="#">Cardiology</a>
-                  <a class="dropdown-item" href="#">Endocrinology</a>
-                  <a class="dropdown-item" href="#">Gastroenterology</a>
-                  <a class="dropdown-item" href="#">Geriatrics</a>
-                  <a class="dropdown-item" href="#">Hematology</a>
-                  <a class="dropdown-item" href="#">Microbiology </a>
-                  <a class="dropdown-item" href="#">neurology</a>
-                  <a class="dropdown-item" href="#">Radiobiology</a>
-                </div>
-
-            </li> -->
-            <!-- <li class="nav-item">
-              <a id="upload" class="navbar-brand dark-icon no-pad-l no-pad-r" href="#">
-                <i class="flaticon-arrow font-xs"></i>Upload
-              </a>
-            </li> -->
-            <!-- <li class="nav-item btn-group">
-              <a class="navbar-brand dark-icon dropdown-toggle-split no-pad-l no-pad-r" data-toggle="dropdown">
-                <i class="flaticon-button-of-three-vertical-squares font-xs" ></i>
-              </a>
-                <div class="dropdown-menu dropdown-menu-right" style="top:49px;">
-                  <a class="dropdown-item" href="#">Update Profile</a>
-                  <a class="dropdown-item" href="#">Add Family Member</a>
-                  <a class="dropdown-item" href="#">Clinical Record</a>
-                  <a class="dropdown-item" href="#">Subscriptions</a>
-                  <a class="dropdown-item" href="#">Privacy Policy</a>
-                  <a class="dropdown-item" href="#">Terms and Conditions</a>
-                  <a class="dropdown-item" href="#">Support</a>
-                  <a class="dropdown-item" href="#">FAQs</a>
-                  <a class="dropdown-item" href="#">Sign Out</a>
-                </div>
-
-            </li> -->
-            <!-- <li class="nav-item active no-pad-l no-pad-r">
-              <a class="nav-link" href="#" style="padding-left: 5px  !important;">SIGN IN</a>
-            </li> -->
           </ul>
         </div>
       <!-- End of Links -->
@@ -572,18 +542,23 @@ include "verify.php";
           </div>
           <div class="row">
             <a href="#" class="no-style"><div class="col-12 menu-list-item"><i class="flaticon-history font-s pad" ></i>History</div></a>
-          </div>
+          </div>-->
           <div class="row">
-            <a href="#" class="no-style"><div class="col-12 menu-list-item"><i class="flaticon-mail font-s pad" ></i>Connect</div></a>
+            <a href="share.php" class="no-style"><div class="col-12 menu-list-item"><i class="flaticon-share-connection-sing font-s pad" ></i>Share Hub</div></a>
           </div>
+          <?php if ($_SESSION['server'] == 1):?>
           <div class="row">
-            <a href="download.php" class="no-style"><div class="col-12 menu-list-item"><i class="flaticon-computer font-s pad" ></i>Browse Files</div></a>
-          </div> -->
+            <a href="./index.php?request=change_password" class="no-style"><div class="col-12 menu-list-item"><i class="flaticon-key font-s pad" ></i>Change password</div></a>
+          </div>
+        <div class="row">
+          <a id="show_request" class="no-style"><div class="col-12 menu-list-item"><i class="flaticon-computer font-s pad" ></i>Incoming Request</div></a>
+        </div>
+      <?php endif; ?>
           <div class="row">
             <div class="col-12 menu-separator"></div>
           </div>
           <div class="row">
-            <a href="about.php" class="no-style"><div class="col-12 menu-list-item"><i class="flaticon-settings-gears font-s pad" ></i>About Us</div></a>
+            <a href="about.php" class="no-style"><div class="col-12 menu-list-item"><i class="flaticon-group font-s pad" ></i>About Us</div></a>
           </div>
           <div class="row">
             <a href="help.pph" class="no-style"><div class="col-12 menu-list-item"><i class="flaticon-help-web-button font-s pad" ></i>Help</div></a>
@@ -608,7 +583,6 @@ include "verify.php";
               0KB/s
             </div>
 				  </div>
-
 				</div>
         <!-- End of Progress Bar -->
         <!-- Upload Form -->
@@ -617,13 +591,13 @@ include "verify.php";
           <div class="upperheader">
             <h1 style="color: #666;font-weight:400;">Send files</h1>
           </div>
-          <div>
+          <div class="main_con">
             <div class="bodymaincontainer">
               <div class="bodymainleft bodymain">
               </div>
               <div class="bodymainright bodymain" action="index.php" style="display:block;margin: 10px;">
-                <form id="myForm" method="post" enctype="multipart/form-data" >
-                  <input type="file" name="file[]" style="margin-top: 60px;border: 10px solid beige;width: 80%;" multiple><br>
+                <form id="myForm" method="post" enctype="multipart/form-data">
+                  <input id="file_select" type="file" name="file[]" style="margin-top: 60px;border: 10px solid beige;width: 80%;" multiple><br>
                   <?php if ($_SESSION['server'] == 1):?>
                     <div style="line-height:16px;padding:10px;">
                       <span style="font-size:12px;color:#777;margin:10px;">Compress all files in zip
@@ -632,7 +606,10 @@ include "verify.php";
                     </div>
                   <?php endif; ?>
                     <br>
-                  <input type="submit" value="Send" id="start">
+                    <?php if ($_SESSION['server'] == 0): ?>
+                      <button class="start" type="button" id="confirm">Send</button>
+                    <?php endif; ?>
+                      <input <?php if ($_SESSION['server'] == 0){echo 'style="opacity:0; z-index:-10000;"';}?> type="submit" value="Send" id="start">
                 </form>
               </div>
             </div>
@@ -641,13 +618,177 @@ include "verify.php";
       </div>
         <!-- End of Upload Form -->
         <!-- frame -->
-      <div class="frame" style="display:none"></div>
+      <div class="frame" style="display:none;"></div>
     </div>
   </div>
 </div>
   <!-- End of Main Body -->
+  <!-- SENDING REQUEST TO SERVER-->
+  <?php if ($_SESSION['server'] == 0): ?>
+  <div class="confirm" >
+    <div class="confirm_body">
+      <div id="confirm_text" class="confirm_body_sub">
+        File is ready to Send<br>
+        Waiting for confirmation...
+      </div>
+      <div class="confirm_body_sub">
+        <button type="" id="confirm_button" class="start" name="button" onclick="confirm(this)">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <?php endif; ?>
+  <!-- SERVER INCOMING REQUEST -->
+  <?php if ($_SESSION['server'] == 1): ?>
+  <div class="request" >
+    <div class="request_body">
+      <div class="close_x" onclick="close(this)">
+        X
+      </div>
+      <div  class="request_body_sub font-m" style="text-align:center;margin-top:10px;">
+        Incoming Request
+      </div>
+      <div id="request_body_noti">
 
+      </div>
+    </div>
+  </div>
+  <?php endif; ?>
   <script type="text/javascript">
+  //Update progress Bar
+    function progressBarUpdate(e , speed , currentPercent){
+      e.css("opacity","1");
+      e.children('.progress-bar').width(currentPercent+'%');
+      e.children('.progress-bar').children('.progressSpeed').text(speed);
+    }
+  //End of Update progress bar
+    function accept(e){
+      var ip = $(e).attr("data-ip");
+      var i = $(e).attr("data-i");
+      var job_id = i[7]+i[8]+i[9]+i[10]+i[11]+i[12];
+      //console.log(job_id);
+      $.ajax({
+        url: "online.php",
+        type: "POST",
+        data : "accept=1&ip="+ip+"&i="+job_id,
+        success : function(result){
+          //console.log(result);
+          var progressbar = $(".progress[data-ip='"+ip+"'][data-i='"+i+"']");
+          //console.log(result);
+          progressbar.siblings('button').css("display","none");
+          if (result == 1 ) {
+            var status = setInterval(function(){
+              $.ajax({
+                url : "online.php",
+                type: "POST",
+                data: "status=1&ip="+ip,
+                success: function(result){
+                  stat = JSON.parse(result)[0];
+                  if (stat.percent == 100) {
+                    $.ajax({
+                      url : "online.php",
+                      type: "POST",
+                      data: "error=1&ip="+ip+"&i="+job_id,
+                      success: function(result){
+                        //console.log(result);
+                        if (result == 0) {
+                          progressbar.children('.progress-bar').css("background","#70ca6b");
+                          progressbar.children('.progress-bar').children('.progressSpeed').text("Received Successfuly.");
+                          progressbar.children('.progress-bar').children('.progressSpeed').css("color","white");
+                          clearInterval(status);
+                        }
+                        if (result == 1) {
+                          progressbar.children('.progress-bar').css("background","#e63030");
+                          progressbar.children('.progress-bar').children('.progressSpeed').text("Transfer Unsuccessful. File rejected by server. Please read more in help.");
+                          progressbar.children('.progress-bar').children('.progressSpeed').css("color","white");
+                          clearInterval(status);
+                        }
+
+
+                      }
+                    });
+
+                  }
+                  progressBarUpdate(progressbar,stat.speed,stat.percent);
+
+                }
+              });
+            },400);
+          }
+          else if( result == 0){
+            progressbar.css("opacity","1");
+            progressbar.children('.progress-bar').css("background","#e63030");
+            progressbar.children('.progress-bar').width('100%');
+            progressbar.children('.progress-bar').children('.progressSpeed').text("Request Expired.");
+            progressbar.children('.progress-bar').children('.progressSpeed').css("color","white");
+          }
+
+          //$(".request_body_sub[data-ip='"+ip+"']").css({"display":"none"});
+          //progressbar = $(".progress[data-ip='"+ip+"']");
+        }
+      });
+    }
+    function reject(e){
+      var ip = $(e).attr("data-ip");
+      var i = $(e).attr("data-i");
+      $.ajax({
+        url: "online.php",
+        type: "POST",
+        data : "decline=1&ip="+ip,
+        success : function(result){
+          //console.log(result);
+          if (result == 0) {
+            //console.log("work");
+            $(".request_body_sub[data-ip='"+ip+"'][data-i='"+i+"']").css({"display":"none"});
+          }
+        }
+      });
+    }
+    var set;
+    function confirm(e){
+      if(e.innerHTML == "Cancel"){
+        $("#file_select").val("");
+        $(".confirm").css("display","none");
+        $.ajax({
+          url: "online.php",
+          type: "POST",
+          data : "cancel=1",
+          success : function(result){
+            console.log(result);
+          }
+        });
+        clearInterval(set);
+      }
+      if (e.innerHTML == "Resend"){
+        console.log("ok");
+        $("#confirm").click();
+      }
+      if (e.innerHTML == "Close"){
+        $(".confirm").css("display","none");
+      }
+    }
+    //close button function
+    $(".close_x").click(function(){
+      $(".request").css("display","none");
+      //$("#request_body_noti").html("");
+    });
+    //end of close function
+    //show_request
+    $("#show_request").click(function(){
+      if ($(".request").css("display") != 'flex') {
+        $.ajax({url: "online.php",
+        type: "POST",
+        data : "old=1",
+         success: function(result){
+           console.log(result);
+          if ( result == 1) {
+            //$("#request_body_noti").html("");
+            $("#side-menu").fadeToggle(20);
+            $(".request").css("display","flex");
+          }
+       }});
+      }
+    });
+    //end of show_request
     var progress;
     var progressbar;
     var progressSpeed;
@@ -656,7 +797,79 @@ include "verify.php";
     var oldTime;
     var oldpercentComplete;
     var c;
+      $("#confirm").click(function(){
+        var fp = $("#file_select");
+        var lg = fp[0].files.length; // get length
+        var items = fp[0].files;
+        var json = '[';
+        for(var i = 0 ; i < lg ; i++ ){
+          var fileName = items[i].name; // get file name
+          var fileSize = items[i].size; // get file size
+          var fileType = items[i].type; // get file type
+          json += '{"name":"'+fileName+'","size":"'+fileSize+'","type":"'+fileType+'"}';
+          if (i < lg-1) {
+            json+= ',';
+          }
+        }
+        json+=']';
+        json = JSON.stringify(JSON.parse(json));
+        //console.log(json);
+        if ($('#file_select').val() != "") {
+          $.ajax({
+            url: "online.php",
+            type: 'POST',
+            data: 'confirm=1&resend=0&data='+json,
+            success: function(result){
+              if (result == 1) {
+                $(".confirm").css("display","flex");
+                $("#confirm_text").html("File is ready to Send<br>Waiting for confirmation from receiver...");
+                $("#confirm_button").html("Cancel");
+                var check = 0;
+                set = setInterval(function(){
+                  $.ajax({
+                    url : "online.php" ,
+                    type: "POST",
+                    data : "reply=1",
+                    success : function(result){
+                      console.log(result);
+                      if (result == 1) {
+                        $(".confirm").css("display","none");
+                        $("#myForm").submit();
+                        clearInterval(set);
+                      }
+                      else if (result.trim() == '0') {
+                        console.log(result);
+                        $("#confirm_text").html("REQUEST REJECTED<br>Request has been declined from receiver side.");
+                        $("#confirm_button").html("Close");
+                        clearInterval(set);
+                      }
+                      else {
 
+                      }
+                    }
+                  });
+                  check++;
+                  if (check == 600) {
+                    $.ajax({
+                      url : "online.php" ,
+                      type: "POST",
+                      data : "confirm=1&resend=1",
+                      success : function(result){
+                        $("#confirm_text").html("NO RESPONCE<br>No responce from receiver side. Please retry...");
+                        $("#confirm_button").html("Resend");
+                        clearInterval(set);
+                      }
+                    });
+                  }
+                },200);
+
+              }
+          }});
+        }
+        else{
+          //console.log("not");
+        }
+      });
        $("#myForm").ajaxForm(
          {
           type : "POST",
@@ -678,35 +891,46 @@ include "verify.php";
           uploadProgress: function (event, position, total, percentComplete) {
             var time = new Date();
             var n = time.getTime();
-            if ((position - send )> 0 && c % 2 ==0) {
+            var s;
+            if ((position - send )> 0) {
               var speed = (((1*(position - send))/1024)/((n-oldTime)/1000)).toFixed(1) ;
               oldTime = n;
               send = position;
               if ( speed < 1024) {
-               progressSpeed.text(speed + 'KB/s');
+                s = speed + 'KB/s';
+                progressSpeed.text(s);
               }
               else if(speed >= 1024) {
-               progressSpeed.text((speed/(1024)).toFixed(1) + 'MB/s');
+                s = (speed/(1024)).toFixed(1) + 'MB/s';
+                progressSpeed.text(s);
               }
             }
             if (percentComplete > oldpercentComplete){
               progressbar.width(percentComplete + '%');
               oldpercentComplete = percentComplete;
+              $.ajax({
+                url : "online.php" ,
+                type: "POST",
+                data : "progress=1&speed="+s+"&percentComplete="+oldpercentComplete,
+                success : function(result){
+                  //console.log(result);
+                }
+              });
              }
-             c++;
+             //console.log("speed="+s+" Percent = "+percentComplete);
            },
            resetForm :true,
            forceSync :true,
            url : 'index.php',
            success:function(responseText) {
-            console.log(responseText);
+            //console.log(responseText);
             if (responseText== "ok"){
               progressSpeed.text("Sent");
               progressSpeed.css("color","#fff");
               progressbar.css("background","#70ca6b");
             }
-            else if(responseText== "ok"){
-              progressSpeed.text("Failed");
+            else if(responseText== "failed"){
+              progressSpeed.text("Failed. File type is not Supported. Please read more in help");
               progressSpeed.css("color","#fff");
               progressbar.css("background","#ff5b29");
             }
