@@ -41,19 +41,18 @@ Sharing a file
   Tick `checkbox` if you want to zip the files before sending.
   * On `client` side open `http://192.168.XXX.XXX:8088` in the browser.<br><br>
   <img src="https://github.com/Accidental-Engineer/fZend/blob/master/screenshot/sh3.png"  width=400><br><br>
+  ##### Note: For the first time a password will be asked, deflault password is `000000`. 
   * Click `Receive`.<br><br>
   <img src="https://github.com/Accidental-Engineer/fZend/blob/master/screenshot/sh2.png"  width=400><br><br>
   * Downloading will autometically start. 
 * ##### Send a file from `Client` to `Server` :
   * On `client` side open `http://192.168.XXX.XXX:8088` in the browser.
-  * Select `Send` option and then select single or multiple files.
+  * Select `Send` option and then select single or multiple files.<br>
   <img src="https://github.com/Accidental-Engineer/fZend/blob/master/screenshot/sh3.png"  width=400><br><br>
-  * On `server` side open `http://localhost:8088` in your browser and wait for incoming request.
+  * On `server` side open `http://localhost:8088` in your browser and wait for incoming request.<br>
   <img src="https://github.com/Accidental-Engineer/fZend/blob/master/screenshot/sh4.png"  width=400><br><br>
   * Click on `Accept` to receive files.
   
-
-
 Shutting down the server
 ------------------------
 To shut down the server run the fZend.exe as Administrator and run fZend command:
