@@ -5,23 +5,23 @@ fZend is a free product and is the created by Accidental Engineer.
 
 To get started:
 -------------------
-*Run the fZend.exe as Aministrator.
-*Run fZend command to create server : 
+* Run the fZend.exe as Aministrator.
+* Run fZend command to create server : 
 ```
 fZend--> start
 ```
-*Server will be hosted at `http://localhost:8088`, you can check it by opening the 
+* Server will be hosted at `http://localhost:8088`, you can check it by opening the 
 address in your web browser or the browser will autometically be opened by fZend application.
 
 **MAKE SURE THAT YOUR FIREWALL IS OFF**
 
-*Then connect your device with other device on network (either WIFI or LAN).
-*Check out your IP address of your device on which the server is running. You can also check `IP ADDRESS` of your device using fZend command:
+* Then connect your device with other device on network (either WIFI or LAN).
+* Check out your IP address of your device on which the server is running. You can also check `IP ADDRESS` of your device using fZend command:
 ```
 fZend--> start
 ```
 
-*Assume that IP address is `192.168.XXX.XXX` then type `http://192.168.XXX.XXX:8088` in the
+* Assume that IP address is `192.168.XXX.XXX` then type `http://192.168.XXX.XXX:8088` in the
 browser of the other device from which you want to send the file ***make sure that device is connected to the same network***.
 
 
