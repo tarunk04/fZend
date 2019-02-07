@@ -1,6 +1,7 @@
 fZend
 ===================
 ![fZend](icon.png)<br><br>
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/Accidental-Engineer/fZend/blob/master/LICENSE)<br>
 fZend is a open source product and is the created by Accidental Engineer.
 
 
