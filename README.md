@@ -1,4 +1,3 @@
-------------
 Read Me File
 ------------
 
@@ -10,7 +9,7 @@ address in your web browser.
 -------------------
 To get started:
 -------------------
-**MAKE SURE THAT THAT YOU FIREWALL IS OFF**
+**MAKE SURE THAT YOUR FIREWALL IS OFF**
 Then connect your device with other device on network (either WIFI or LAN).
 Check out your IP address of your device on which the server is running. 
 Assume that IP address is 192.168.XXX.XXX then type http://192.168.XXX.XXX:8088 in the
