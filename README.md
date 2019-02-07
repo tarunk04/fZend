@@ -23,16 +23,24 @@ To shut down the server run the fZend.exe as Administrator and type `fZend--> st
 --------------------------
 Change server default port
 --------------------------
-Open file: httpd.conf\n
-Located in folder: `\mini_server_8\udrive\usr\local\apache2\conf`\n
-`Locate the lines:\n
-  Listen 8088\n 
-  ServerName localhost:8088\n
-Change to:\n
+Open file: httpd.conf
+
+Located in folder: `\mini_server_8\udrive\usr\local\apache2\conf`
+
+Locate the lines:
+`
+  Listen 8088
+  ServerName localhost:8088
+` 
+Change to:
+`
   Listen 8080 \n
-  ServerName localhost:8080\n`
-This moves the server to the standard secondary web server port\n
-Note: Type http://localhost:8080 into a browser to view the site.\n
+  ServerName localhost:8080\n
+`
+
+This moves the server to the standard secondary web server port
+
+(Note: Type http://localhost:8080 into a browser to view the site.)
 
 If port already in use try any value above 2000\n
 
