@@ -9,7 +9,7 @@ To get started:
 -------------------
 * Clone this repository:  
 ```
-git clone https://github.com/sourabhv/FlappyBirdClone.git
+git https://github.com/Accidental-Engineer/fZend.git
 ```
 or click `Download ZIP` in right panel of repository and extract it.
 * Run the fZend.exe as *Aministrator*.
