@@ -1,0 +1,21 @@
+# depslib dependency file v1.0
+1524761568 source:f:\projects\filetransfer\mini_server_8\fzend\main.cpp
+	<windows.h>
+	<stdio.h>
+	<iostream>
+	<conio.h>
+	<fstream>
+	<stdlib.h>
+	<string>
+	"resource.h"
+
+1518817825 f:\projects\filetransfer\mini_server_8\fzend\resource.h
+
+1518818174 source:f:\projects\filetransfer\mini_server_8\fzend\resource.rc
+	"resource.h"
+
+1518818174 source:f:\projects\fzend beta\fzend\fzend\resource.rc
+	"resource.h"
+
+1518817825 f:\projects\fzend beta\fzend\fzend\resource.h
+

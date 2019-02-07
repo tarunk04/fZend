@@ -1,1 +1,0 @@
-server|i:1;skip|i:0;is_logged|b:1;DB|a:4:{s:4:"user";s:4:"root";s:3:"pwd";s:4:"root";s:4:"host";s:9:"localhost";s:4:"port";s:4:"3313";}sql_sd|a:2:{i:0;a:1:{s:8:"Database";s:5:"mysql";}i:1;a:1:{s:8:"Database";s:7:"records";}}
