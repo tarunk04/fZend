@@ -9,7 +9,7 @@ To get started:
 -------------------
 * Clone this repository:  
 ```
-git https://github.com/Accidental-Engineer/fZend.git
+git https://github.com/tarunk04/fZend.git
 ```
 or click `Download ZIP` in right panel of repository and extract it.
 * Run the fZend.exe as *Aministrator*.
@@ -35,9 +35,9 @@ Sharing a file
 ------------------------
 
 * ##### Send a file from `Server` to `Client` :
-  * On `server` side open `http://localhost:8088` in your browser.<br>
+  * On `server` side open `http://localhost:8088` in your browser.<br><br>
   <img src="https://github.com/Accidental-Engineer/fZend/blob/master/screenshot/sh1.png"  width=400><br><br>
-  * Choose single or multiple files.<br>
+  * Choose single or multiple files.<br><br>
   <img src="https://github.com/Accidental-Engineer/fZend/blob/master/screenshot/sh_1.png"  width=400><br><br>
   Tick `checkbox` if you want to zip the files before sending.
   * On `client` side open `http://192.168.XXX.XXX:8088` in the browser.<br><br>
@@ -48,9 +48,9 @@ Sharing a file
   * Downloading will autometically start. 
 * ##### Send a file from `Client` to `Server` :
   * On `client` side open `http://192.168.XXX.XXX:8088` in the browser.
-  * Select `Send` option and then select single or multiple files.<br>
+  * Select `Send` option and then select single or multiple files.<br><br>
   <img src="https://github.com/Accidental-Engineer/fZend/blob/master/screenshot/sh3.png"  width=400><br><br>
-  * On `server` side open `http://localhost:8088` in your browser and wait for incoming request.<br>
+  * On `server` side open `http://localhost:8088` in your browser and wait for incoming request.<br><br>
   <img src="https://github.com/Accidental-Engineer/fZend/blob/master/screenshot/sh4.png"  width=400><br><br>
   * Click on `Accept` to receive files.
   
