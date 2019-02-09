@@ -8,8 +8,8 @@ fZend is a open source product and is the created by Accidental Engineer.
 To get started:
 -------------------
 * Clone this repository:  
-```
-git https://github.com/tarunk04/fZend.git
+```console
+git clone https://github.com/tarunk04/fZend.git
 ```
 or click `Download ZIP` in right panel of repository and extract it.
 * Run the fZend.exe as *Aministrator*.
