@@ -2,7 +2,7 @@ fZend
 ===================
 ![fZend](icon.png)<br><br>
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/Accidental-Engineer/fZend/blob/master/LICENSE)<br>
-fZend is a open source product and is the created by Accidental Engineer.
+fZend is a open source product and is the created by Accidental Engineer.fZend is a windows application for file sharing over WiFi or Ethernet. It provides a web-based interface for authorization and file selection. fZend comes with a solution of  plug and play portable server based file sharing application, to ease the file transfer from PC to any device vice versa. It is easy to setup also support sharing of large file upto 2GB.
 
 
 To get started:
